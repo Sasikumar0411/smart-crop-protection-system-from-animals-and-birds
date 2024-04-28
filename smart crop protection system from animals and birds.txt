@@ -1,0 +1,40 @@
+#include <Ultrasonic.h>
+
+#define TRIGGER_PIN 2
+#define ECHO_PIN 3
+#define LED_PIN 13
+
+Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
+bool birdDetected = false;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  float distance = ultrasonic.read();
+
+  if (distance <= 50 && !birdDetected) {
+    birdDetected = true;
+    Serial.println("Bird Detected!");
+    scareBirds();
+  } else if (distance > 50 && birdDetected) {
+    birdDetected = false;
+    Serial.println("No Bird Detected");
+    turnOffLED();
+  }
+
+  delay(1000); // Adjust delay based on system requirements
+}
+
+void scareBirds() {
+  Serial.println("Activating Bird Deterrents...");
+  digitalWrite(LED_PIN, HIGH);
+  delay(2000); // Duration of deterrent activation
+}
+
+void turnOffLED() {
+  Serial.println("Turning off Bird Deterrents...");
+  digitalWrite(LED_PIN, LOW);
+}
